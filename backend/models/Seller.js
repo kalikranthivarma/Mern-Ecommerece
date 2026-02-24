@@ -17,7 +17,8 @@ const sellerSchema =  mongoose.Schema({
     role:{
         type:String,
         default:"seller"
-    }
+    },
+    refreshToken:String
 })
 
 module.exports = mongoose.model("Seller",sellerSchema)
