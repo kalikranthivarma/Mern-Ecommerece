@@ -3,6 +3,9 @@ import API from "../services/axiosInstance"
 import { AuthContext } from "../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 
+const apiOrigin =
+  (import.meta.env.VITE_API_URL || "http://localhost:2000/api").replace(/\/api\/?$/, "")
+
 export default function Home() {
 
   const [products, setProducts] = useState([])
@@ -64,7 +67,7 @@ export default function Home() {
 
               {p.images?.length > 0 && (
                 <img
-                  src={`http://localhost:2000/api/products/image/${p.images[0]}`}
+                  src={`${apiOrigin}/api/products/image/${p.images[0]}`}
                   className="card-img-top"
                   alt={p.name}
                   style={{ height: "200px", objectFit: "cover" }}

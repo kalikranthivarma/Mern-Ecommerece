@@ -4,6 +4,12 @@ const sellerSchema = require("../models/Seller")
 const buyerSchema = require("../models/Buyer")
 
 const router = express.Router()
+const isProduction = process.env.NODE_ENV === "production"
+const clearCookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax"
+}
 
 router.post("/refresh-token", async (req, res) => {
 
@@ -63,7 +69,7 @@ router.post("/logout", async (req, res) => {
             await user.save()
         }
 
-        res.clearCookie("refreshToken")
+        res.clearCookie("refreshToken", clearCookieOptions)
 
         return res.json({ message: "Logout successful" })
 

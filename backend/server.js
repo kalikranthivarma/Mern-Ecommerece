@@ -12,10 +12,13 @@ const paymentRoutes = require("./routes/paymentRoutes.js")
 
 const cookieParser =require("cookie-parser")
 require("dotenv").config()
+const allowedOrigin = process.env.CLIENT_URL || "http://localhost:5173"
+
+app.set("trust proxy", 1)
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin: allowedOrigin,
     credentials:true
 }))
 connectDB(app)

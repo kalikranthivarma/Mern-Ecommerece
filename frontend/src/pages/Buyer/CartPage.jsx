@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react"
 import API from "../../services/axiosInstance"
 import { useNavigate } from "react-router-dom"
 
+const apiOrigin =
+  (import.meta.env.VITE_API_URL || "http://localhost:2000/api").replace(/\/api\/?$/, "")
+
 export default function CartPage() {
   const navigate = useNavigate()
   const [cart, setCart] = useState(null)
@@ -67,7 +70,7 @@ export default function CartPage() {
                 <div className="row g-0 align-items-center">
                   <div className="col-md-3 text-center p-2">
                     <img
-                      src={`http://localhost:2000/api/products/image/${product.images[0]}`}
+                      src={`${apiOrigin}/api/products/image/${product.images[0]}`}
                       className="img-fluid rounded"
                       style={{ maxHeight: "120px", objectFit: "cover" }}
                     />

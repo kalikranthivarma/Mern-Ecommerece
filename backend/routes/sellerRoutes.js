@@ -5,6 +5,14 @@ const sellerSchema = require("../models/Seller")
 const bcrypt = require("bcrypt")
 const { generateAccessToken, generateRefreshToken } = require("../utils/generateTokens")
 
+const isProduction = process.env.NODE_ENV === "production"
+const refreshCookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000
+}
+
 router.post("/send-otp", async (req, res) => {
 
     const { email } = req.body
@@ -116,12 +124,7 @@ router.post("/login", async (req, res) => {
         seller.refreshToken = refreshToken
         await seller.save()
 
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        res.cookie("refreshToken", refreshToken, refreshCookieOptions)
 
         return res.status(200).json({
             accessToken,
