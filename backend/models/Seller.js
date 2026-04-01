@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-
-const sellerSchema =  mongoose.Schema({
-    name: String,
+const mongoose = require("mongoose")
+const SellerSchema= mongoose.Schema({
+    name:String,
     email:{
         type:String,
         unique:true,
@@ -21,6 +20,4 @@ const sellerSchema =  mongoose.Schema({
     refreshToken:String
 })
 
-module.exports = mongoose.model("Seller",sellerSchema)
-
-          
+module.exports=mongoose.model("Seller",SellerSchema)

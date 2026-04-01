@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const transporter = require("../utils/sendEmail")
-const sellerSchema = require("../models/Seller")
+const Buyer = require("../models/Buyer")
 const bcrypt = require("bcrypt")
 const { generateAccessToken, generateRefreshToken } = require("../utils/generateTokens")
 
@@ -10,30 +10,31 @@ router.post("/send-otp", async (req, res) => {
     const { email } = req.body
 
     try {
-        let seller = await sellerSchema.findOne({ email })
+
+        let buyer = await Buyer.findOne({ email })
 
         const otp = Math.floor(10000 + Math.random() * 90000).toString()
 
-        if (!seller) {
-            seller = new sellerSchema({ email })
+        if (!buyer) {
+            buyer = new Buyer({ email })
         }
 
-        seller.otp = otp
-        seller.otpExpiry = Date.now() + 5 * 60 * 1000
+        buyer.otp = otp
+        buyer.otpExpiry = Date.now() + 5 * 60 * 1000
 
-        await seller.save()
+        await buyer.save()
 
         await transporter.sendMail({
             from: process.env.EMAIL_USERNAME,
             to: email,
-            subject: "OTP for Email Verification",
+            subject: "OTP for Buyer Email Verification",
             html: `<h3>Your OTP is: ${otp}</h3>`
         })
 
-        return res.status(200).json({ message: "OTP sent to email" })
+        return res.status(200).json({ message: "OTP sent successfully" })
 
     } catch (err) {
-        console.log("Send OTP Error:", err)
+        console.log("Buyer OTP Error:", err)
         return res.status(500).json({ message: err.message })
     }
 })
@@ -43,19 +44,20 @@ router.post("/verify-otp", async (req, res) => {
     const { email, otp } = req.body
 
     try {
-        const seller = await sellerSchema.findOne({ email })
 
-        if (!seller)
+        const buyer = await Buyer.findOne({ email })
+
+        if (!buyer)
             return res.status(400).json({ message: "Email not found" })
 
-        if (seller.otp !== otp || seller.otpExpiry < Date.now())
+        if (buyer.otp !== otp || buyer.otpExpiry < Date.now())
             return res.status(400).json({ message: "Invalid or expired OTP" })
 
-        seller.isEmailVerified = true
-        seller.otp = null
-        seller.otpExpiry = null
+        buyer.isEmailVerified = true
+        buyer.otp = null
+        buyer.otpExpiry = null
 
-        await seller.save()
+        await buyer.save()
 
         return res.status(200).json({ message: "Email verified successfully" })
 
@@ -64,32 +66,32 @@ router.post("/verify-otp", async (req, res) => {
         return res.status(500).json({ message: err.message })
     }
 })
-
 router.post("/register", async (req, res) => {
 
     const { name, email, password } = req.body
 
     try {
-        const seller = await sellerSchema.findOne({ email })
 
-        if (!seller)
+        const buyer = await Buyer.findOne({ email })
+
+        if (!buyer)
             return res.status(400).json({ message: "Email not found. Verify first." })
 
-        if (!seller.isEmailVerified)
+        if (!buyer.isEmailVerified)
             return res.status(400).json({ message: "Email not verified" })
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        seller.name = name
-        seller.password = hashedPassword
-        seller.role = "seller"
+        buyer.name = name
+        buyer.password = hashedPassword
+        buyer.role = "buyer"
 
-        await seller.save()
+        await buyer.save()
 
-        return res.status(201).json({ message: "Seller registration successful" })
+        return res.status(201).json({ message: "Buyer registration successful" })
 
     } catch (err) {
-        console.log("Seller Register Error:", err)
+        console.log("Buyer Register Error:", err)
         return res.status(500).json({ message: err.message })
     }
 })
@@ -99,22 +101,23 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body
 
     try {
-        const seller = await sellerSchema.findOne({ email })
 
-        if (!seller)
+        const buyer = await Buyer.findOne({ email })
+
+        if (!buyer)
             return res.status(400).json({ message: "User not found" })
 
-        const isMatch = await bcrypt.compare(password, seller.password)
+        const isMatch = await bcrypt.compare(password, buyer.password)
 
         if (!isMatch)
-            return res.status(400).json({ message: "Password is incorrect" })
+            return res.status(400).json({ message: "Password incorrect" })
 
-        // ✅ Pass entire seller object (so role is included)
-        const accessToken = generateAccessToken(seller)
-        const refreshToken = generateRefreshToken(seller)
+        // ✅ Pass full buyer object
+        const accessToken = generateAccessToken(buyer)
+        const refreshToken = generateRefreshToken(buyer)
 
-        seller.refreshToken = refreshToken
-        await seller.save()
+        buyer.refreshToken = refreshToken
+        await buyer.save()
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
@@ -126,16 +129,16 @@ router.post("/login", async (req, res) => {
         return res.status(200).json({
             accessToken,
             user: {
-                id: seller._id,
-                name: seller.name,
-                email: seller.email,
-                role: seller.role
+                id: buyer._id,
+                name: buyer.name,
+                email: buyer.email,
+                role: buyer.role
             }
         })
 
     } catch (err) {
-        console.log("Seller Login Error:", err)
-        return res.status(500).json({ message: "Server Error" })
+        console.log("Buyer Login Error:", err)
+        return res.status(500).json({ message: "Server error" })
     }
 })
 
