@@ -17,8 +17,8 @@ This repo includes a Blueprint file at `render.yaml`, so you can deploy both ser
 4. Connect this repository.
 5. Select the branch that contains `render.yaml`.
 6. Review the two services Render creates:
-   - `mern-ecommerce-api`
-   - `mern-ecommerce-web`
+   - `kranthi-mern-ecommerce-api`
+   - `kranthi-mern-ecommerce-web`
 7. Fill in the required environment variables when prompted.
 8. Deploy.
 
