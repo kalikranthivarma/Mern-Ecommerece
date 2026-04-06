@@ -36,7 +36,7 @@ This repo includes a Blueprint file at `render.yaml`, so you can deploy both ser
 - Type: `Static Site`
 - Root directory: `frontend`
 - Build command: `npm install && npm run build`
-- Publish directory: `frontend/dist`
+- Publish directory: `dist`
 
 ### Required Environment Variables
 
@@ -45,6 +45,7 @@ This repo includes a Blueprint file at `render.yaml`, so you can deploy both ser
 ```env
 MONGODB_URL=your_mongodb_connection_string
 CLIENT_URL=https://your-frontend-name.onrender.com
+CLIENT_URLS=https://your-frontend-name.onrender.com,http://localhost:5173
 STRIPE_SECRET_KEY=your_stripe_secret_key
 EMAIL_USERNAME=your_email_username
 EMAIL_PASSWORD=your_email_password
@@ -71,3 +72,26 @@ Example env files are included here:
 
 - `backend/.env.example`
 - `frontend/.env.example`
+
+## Run Locally
+
+1. Copy `backend/.env.example` to `backend/.env`.
+2. Copy `frontend/.env.example` to `frontend/.env`.
+3. In `backend`, run `npm install` and `npm run dev`.
+4. In `frontend`, run `npm install` and `npm run dev`.
+
+Use these local values:
+
+```env
+# backend/.env
+PORT=2000
+CLIENT_URL=http://localhost:5173
+CLIENT_URLS=http://localhost:5173,http://127.0.0.1:5173
+```
+
+```env
+# frontend/.env
+VITE_API_URL=http://localhost:2000/api
+```
+
+This lets the same codebase work on localhost and on Render, with the backend accepting both local Vite and deployed frontend origins.

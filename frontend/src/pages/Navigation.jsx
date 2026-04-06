@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, NavLink } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import API from "../services/axiosInstance"
 
@@ -20,10 +20,10 @@ export default function Navigation() {
     }
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg navbar-dark app-navbar sticky-top">
             <div className="container">
 
-                <Link className="navbar-brand" to="/">E-Commerce</Link>
+                <Link className="navbar-brand brand-mark" to="/">Market<span className="brand-accent">Flow</span></Link>
 
                 <button
                     className="navbar-toggler"
@@ -41,15 +41,15 @@ export default function Navigation() {
                         {!user && (
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/">Home</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/">Home</NavLink>
                                 </li>
 
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/login">Login</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/login">Login</NavLink>
                                 </li>
 
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/register">Register</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/register">Register</NavLink>
                                 </li>
                             </>
                         )}
@@ -57,15 +57,15 @@ export default function Navigation() {
                         {user?.role == 'seller' && (
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/">Home</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/">Home</NavLink>
                                 </li>
 
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/seller/dashboard">Dashboard</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/seller/dashboard">Dashboard</NavLink>
                                 </li>
 
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/seller/add-product">Add Product</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/seller/add-product">Add Product</NavLink>
                                 </li>
                             </>
                         )}
@@ -73,19 +73,19 @@ export default function Navigation() {
                         {user?.role == "buyer" && (
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/">Home</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/">Home</NavLink>
                                 </li>
 
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/buyer/dashboard">Dashboard</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/buyer/dashboard">Dashboard</NavLink>
                                 </li>
 
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/buyer/cart">Cart</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/buyer/cart">Cart</NavLink>
                                 </li>
 
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/buyer/order">Orders</Link>
+                                    <NavLink className="nav-link app-nav-link" to="/buyer/order">Orders</NavLink>
                                 </li>
                             </>
                         )}
@@ -93,8 +93,15 @@ export default function Navigation() {
                     </ul>
 
                     {user && (
+                        <div className="navbar-user-chip me-lg-3">
+                            <span>{user.name || user.email}</span>
+                            <span className="text-uppercase small">{user.role}</span>
+                        </div>
+                    )}
+
+                    {user && (
                         <button
-                            className="btn btn-danger"
+                            className="btn btn-outline-light rounded-pill px-4"
                             onClick={handleLogout}
                         >
                             Logout

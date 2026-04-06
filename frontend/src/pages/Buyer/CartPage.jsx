@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react"
 import API from "../../services/axiosInstance"
 import { useNavigate } from "react-router-dom"
-
-const apiOrigin =
-  (import.meta.env.VITE_API_URL || "http://localhost:2000/api").replace(/\/api\/?$/, "")
+import { getProductImageUrl } from "../../services/appConfig"
 
 export default function CartPage() {
   const navigate = useNavigate()
@@ -17,6 +15,7 @@ export default function CartPage() {
       console.log(err)
     }
   }
+
   useEffect(() => {
     fetchCart()
   }, [])
@@ -42,10 +41,16 @@ export default function CartPage() {
       console.log(err)
     }
   }
+
   if (!cart || cart.items.length === 0) {
     return (
-      <div className="container mt-5 text-center">
-        <h3>Your cart is empty</h3>
+      <div className="container page-shell">
+        <section className="section-card">
+          <div className="empty-state">
+            <h3 className="mb-2">Your cart is empty</h3>
+            <p className="mb-0">Add a few products from the home page and they will appear here.</p>
+          </div>
+        </section>
       </div>
     )
   }
@@ -55,33 +60,37 @@ export default function CartPage() {
   }, 0)
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">Your Cart</h2>
-      <div className="row">
-        {/* Cart Items */}
-        <div className="col-md-8">
+    <div className="container page-shell">
+      <section className="hero-banner">
+        <span className="hero-kicker">Cart overview</span>
+        <h1 className="hero-title">Review your items before heading to checkout.</h1>
+        <p className="hero-text mb-0">Adjust quantities, remove products, and confirm your order summary from a cleaner responsive layout.</p>
+      </section>
+      <div className="row g-4">
+        <div className="col-lg-8">
           {cart.items.map((item) => {
             const product = item.product
             return (
               <div
                 key={product._id}
-                className="card mb-3 shadow-sm"
+                className="card product-card mb-3"
               >
                 <div className="row g-0 align-items-center">
-                  <div className="col-md-3 text-center p-2">
+                  <div className="col-sm-4 col-md-3 text-center p-3">
                     <img
-                      src={`${apiOrigin}/api/products/image/${product.images[0]}`}
+                      src={getProductImageUrl(product.images[0])}
                       className="img-fluid rounded"
                       style={{ maxHeight: "120px", objectFit: "cover" }}
+                      alt={product.name}
                     />
                   </div>
-                  <div className="col-md-9">
+                  <div className="col-sm-8 col-md-9">
                     <div className="card-body">
                       <h5 className="card-title">{product.name}</h5>
-                      <p className="card-text mb-2">
-                        Price: <strong>₹{product.price}</strong>
+                      <p className="card-text mb-2 muted-text">
+                        Price: <strong className="text-dark">Rs. {product.price}</strong>
                       </p>
-                      <div className="d-flex align-items-center gap-2">
+                      <div className="d-flex flex-wrap align-items-center gap-2">
                         <button
                           className="btn btn-outline-secondary btn-sm"
                           onClick={() =>
@@ -100,7 +109,7 @@ export default function CartPage() {
                           +
                         </button>
                         <button
-                          className="btn btn-danger btn-sm ms-3"
+                          className="btn btn-danger btn-sm ms-sm-3"
                           onClick={() => removeItem(product._id)}
                         >
                           Remove
@@ -113,9 +122,8 @@ export default function CartPage() {
             )
           })}
         </div>
-        {/* Order Summary */}
-        <div className="col-md-4">
-          <div className="card shadow-sm p-3">
+        <div className="col-lg-4">
+          <div className="checkout-card p-4 position-sticky" style={{ top: "6rem" }}>
             <h4 className="mb-3">Order Summary</h4>
             <p className="d-flex justify-content-between">
               <span>Total Items</span>
@@ -123,11 +131,11 @@ export default function CartPage() {
             </p>
             <p className="d-flex justify-content-between">
               <span>Total Price</span>
-              <strong>₹{totalPrice}</strong>
+              <strong>Rs. {totalPrice}</strong>
             </p>
             <hr />
             <button
-              className="btn btn-warning w-100"
+              className="btn btn-brand rounded-pill w-100 py-2"
               onClick={() => navigate("/buyer/checkout")}
             >
               Proceed to Checkout

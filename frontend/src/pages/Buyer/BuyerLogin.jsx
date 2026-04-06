@@ -11,6 +11,7 @@ export default function BuyerLogin() {
         password: ""
     })
     const [loading, setLoading] = useState(false)
+
     const handleChange = (e) => {
         setFormData(prev => ({
             ...prev,
@@ -23,9 +24,7 @@ export default function BuyerLogin() {
         try {
             setLoading(true)
             const res = await axios.post("/buyer/login", formData)
-            console.log(res)
             if (res.data.accessToken) {
-                //localStorage.setItem("token", res.data.token)
                 login(res.data)
                 alert("Login Successful")
                 navigate("/")
@@ -38,40 +37,38 @@ export default function BuyerLogin() {
     }
 
     return (
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-5">
-                    <div className="card shadow p-4">
-                        <h3 className="text-center mb-4">Buyer Login</h3>
-                        <form>
-                            <div className="mb-3">
-                                <input
-                                    type="email"
-                                    name="email"
-                                    className="form-control"
-                                    placeholder="Enter Email"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <input
-                                    type="password"
-                                    name="password"
-                                    className="form-control"
-                                    placeholder="Enter Password"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <button
-                                className="btn btn-primary w-100"
-                                disabled={loading}
-                                onClick={handleLogin}
-                            >
-                                {loading ? "Logging in..." : "Login"}
-                            </button>
-                        </form>
-                    </div>
+        <div className="container auth-shell">
+            <div className="auth-card w-100">
+                <div className="text-center mb-4">
+                    <span className="hero-kicker">Buyer access</span>
+                    <h2 className="mb-2">Welcome back</h2>
+                    <p className="section-subtitle mb-0">Sign in to view your cart, orders, and checkout details.</p>
                 </div>
+                <form onSubmit={handleLogin}>
+                    <div className="mb-3">
+                        <label className="form-label">Email address</label>
+                        <input
+                            type="email"
+                            name="email"
+                            className="form-control"
+                            placeholder="Enter your email"
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="form-label">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            className="form-control"
+                            placeholder="Enter your password"
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <button className="btn btn-brand rounded-pill w-100 py-2" disabled={loading}>
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
+                </form>
             </div>
         </div>
     )

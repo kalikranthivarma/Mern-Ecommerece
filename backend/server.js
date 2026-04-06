@@ -12,13 +12,30 @@ const paymentRoutes = require("./routes/paymentRoutes.js")
 
 const cookieParser =require("cookie-parser")
 require("dotenv").config()
-const allowedOrigin = process.env.CLIENT_URL || "http://localhost:5173"
+const defaultOrigins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174"
+]
+const configuredOrigins = [
+    process.env.CLIENT_URL,
+    ...(process.env.CLIENT_URLS || "").split(",")
+]
+    .map((origin) => origin && origin.trim())
+    .filter(Boolean)
+const allowedOrigins = [...new Set([...defaultOrigins, ...configuredOrigins])]
 
 app.set("trust proxy", 1)
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors({
-    origin: allowedOrigin,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true)
+        }
+        return callback(new Error("CORS origin not allowed"))
+    },
     credentials:true
 }))
 connectDB(app)
@@ -35,4 +52,6 @@ app.use("/api/cart", cartRoutes)
 app.use("/api/orders", orderRoutes)
 app.use('/api/payment',paymentRoutes)
 
-app.listen(process.env.PORT,()=>console.log("Server is running on port",process.env.PORT))
+const port = process.env.PORT || 2000
+
+app.listen(port,()=>console.log("Server is running on port", port))

@@ -115,6 +115,12 @@ router.post("/login", async (req, res) => {
         if (!buyer)
             return res.status(400).json({ message: "User not found" })
 
+        if (!buyer.password)
+            return res.status(400).json({ message: "Complete registration first before logging in" })
+
+        if (!buyer.isEmailVerified)
+            return res.status(400).json({ message: "Verify your email before logging in" })
+
         const isMatch = await bcrypt.compare(password, buyer.password)
 
         if (!isMatch)

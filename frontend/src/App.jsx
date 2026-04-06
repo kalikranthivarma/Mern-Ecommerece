@@ -22,73 +22,74 @@ import Home from "./pages/Home.jsx"
 function App() {
   return (
     <BrowserRouter>
-      <Navigation />
+      <div className="app-shell">
+        <Navigation />
+        <main className="app-main">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<RegisterSelection />} />
+            <Route path="/login" element={<LoginSelection />} />
+            <Route path="/seller/register" element={<SellerRegister />} />
+            <Route path="/seller/login" element={<SellerLogin />} />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<RegisterSelection />} />
-        <Route path="/login" element={<LoginSelection />} />
-        <Route path="/seller/register" element={<SellerRegister />} />
-        <Route path="/seller/login" element={<SellerLogin />} />
+            <Route
+              path="/seller/dashboard"
+              element={
+                <ProtectedRoute roles={["seller"]}>
+                  <SellerDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-        <Route
-          path="/seller/dashboard"
-          element={
-            <ProtectedRoute roles={["seller"]}>
-              <SellerDashboard />
-            </ProtectedRoute>
-          }
-        />
+            <Route
+              path="/seller/add-product"
+              element={
+                <ProtectedRoute roles={["seller"]}>
+                  <AddProduct />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/buyer/register" element={<BuyerRegister />} />
+            <Route path="/buyer/login" element={<BuyerLogin />} />
 
-        <Route
-          path="/seller/add-product"
-          element={
-            <ProtectedRoute roles={["seller"]}>
-              <AddProduct />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/buyer/register" element={<BuyerRegister />} />
-        <Route path="/buyer/login" element={<BuyerLogin />} />
+            <Route
+              path="/buyer/cart"
+              element={
+                <ProtectedRoute roles={["buyer"]}>
+                  <CartPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/buyer/checkout"
+              element={
+                <ProtectedRoute roles={["buyer"]}>
+                  <CheckoutPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/buyer/order"
+              element={
+                <ProtectedRoute roles={["buyer"]}>
+                  <OrdersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/buyer/dashboard"
+              element={
+                <ProtectedRoute roles={["buyer"]}>
+                  <BuyerDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-        <Route
-          path="/buyer/cart"
-          element={
-            <ProtectedRoute roles={["buyer"]}>
-              <CartPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/buyer/checkout"
-          element={
-            <ProtectedRoute roles={["buyer"]}>
-              <CheckoutPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/buyer/order"
-          element={
-            <ProtectedRoute roles={["buyer"]}>
-              <OrdersPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/buyer/dashboard"
-          element={
-            <ProtectedRoute roles={["buyer"]}>
-              <BuyerDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Stripe Redirect Pages */}
-        <Route path="/payment-success" element={<PaymentSuccess/>}/>
-        <Route path="/payment-cancel" element={<PaymentCancel/>}/>
-      </Routes>
-
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-cancel" element={<PaymentCancel />} />
+          </Routes>
+        </main>
+      </div>
     </BrowserRouter>
   )
 }

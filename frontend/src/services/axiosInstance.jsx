@@ -1,6 +1,5 @@
 import axios from 'axios'
-
-const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:2000/api"
+import { apiBaseUrl } from './appConfig'
 
 const instance = axios.create({
     baseURL: apiBaseUrl,
@@ -16,27 +15,32 @@ instance.interceptors.request.use((config)=>{
 })
 
 instance.interceptors.response.use(
-    res=>res,
-    async error=>{
-        const originalRequest= error.config 
-        if(error.response.status==400 && !originalRequest._retry){
-            originalRequest._retry=true 
-            try{
-                await axios.post(`${apiBaseUrl}/refresh-token`,{},{
-                    withCredentials:true
+    res => res,
+    async error => {
+        const originalRequest = error.config
+        const status = error.response?.status
+
+        if (status === 401 && !originalRequest?._retry) {
+            originalRequest._retry = true
+            try {
+                const refreshResponse = await axios.post(`${apiBaseUrl}/refresh-token`, {}, {
+                    withCredentials: true
                 })
-                .then((res)=>{
-                    localStorage.setItem("token",res.data.accessToken)
-                    originalRequest.headers.Authorization=`Bearer ${res.data.accessToken}`
-                    return instance(originalRequest)
-                })
+
+                localStorage.setItem("token", refreshResponse.data.accessToken)
+                originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`
+                return instance(originalRequest)
             }
-            catch(err){
+            catch (err) {
                 localStorage.removeItem("token")
-                window.location.href="/login"
+                localStorage.removeItem("user")
+                if (window.location.pathname !== "/login") {
+                    window.location.href = "/login"
+                }
             }
         }
-        return Promise(error)
+
+        return Promise.reject(error)
     }
 )
 

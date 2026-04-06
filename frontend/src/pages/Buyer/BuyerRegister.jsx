@@ -78,73 +78,83 @@ export default function BuyerRegister() {
         }
     }
     return (
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-5">
-                    <div className="card shadow p-4">
-                        <h3 className="text-center mb-4">Buyer Registration</h3>
-                        <form>
-                            <div className="mb-3">
-                                <input
-                                    type="text"
-                                    name="name"
-                                    className="form-control"
-                                    placeholder="Enter Name"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="mb-3 d-flex gap-2">
+        <div className="container auth-shell">
+            <div className="auth-card w-100">
+                <div className="text-center mb-4">
+                    <span className="hero-kicker">Buyer signup</span>
+                    <h2 className="mb-2">Create your shopping account</h2>
+                    <p className="section-subtitle mb-0">Verify your email, secure your login, and start ordering in minutes.</p>
+                </div>
+                <form>
+                    <div className="mb-3">
+                        <label className="form-label">Full name</label>
+                        <input
+                            type="text"
+                            name="name"
+                            className="form-control"
+                            placeholder="Enter your name"
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Email address</label>
+                        <div className="row g-2">
+                            <div className="col-12 col-md-8">
                                 <input
                                     type="email"
                                     name="email"
                                     className="form-control"
-                                    placeholder="Enter Email"
+                                    placeholder="Enter your email"
                                     onChange={handleChange}
                                 />
+                            </div>
+                            <div className="col-12 col-md-4">
                                 <button
-                                    className="btn btn-primary"
+                                    className="btn btn-soft rounded-pill w-100 py-2"
                                     disabled={loading}
                                     onClick={handleSendOtp}
                                 >
                                     {loading ? "Sending..." : "Send OTP"}
                                 </button>
                             </div>
-                            {otpSent && (
-                                <div className="mb-3">
-                                    <input
-                                        type="text"
-                                        className="form-control mb-2"
-                                        placeholder="Enter OTP"
-                                        onChange={(e) => setOtp(e.target.value)}
-                                    />
-                                    <button
-                                        className="btn btn-success w-100"
-                                        disabled={loading}
-                                        onClick={handleVerifyOtp}
-                                    >
-                                        Verify OTP
-                                    </button>
-                                </div>
-                            )}
-                            <div className="mb-3">
-                                <input
-                                    type="password"
-                                    name="password"
-                                    className="form-control"
-                                    placeholder="Enter Password"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <button
-                                className="btn btn-dark w-100"
-                                disabled={!emailVerified || loading}
-                                onClick={handleRegister}
-                            >
-                                Register
-                            </button>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                    {otpSent && (
+                        <div className="mb-3">
+                            <label className="form-label">Verification code</label>
+                            <input
+                                type="text"
+                                className="form-control mb-2"
+                                placeholder="Enter OTP"
+                                onChange={(e) => setOtp(e.target.value)}
+                            />
+                            <button
+                                className="btn btn-success rounded-pill w-100 py-2"
+                                disabled={loading}
+                                onClick={handleVerifyOtp}
+                            >
+                                Verify OTP
+                            </button>
+                        </div>
+                    )}
+                    <div className="mb-4">
+                        <label className="form-label">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            className="form-control"
+                            placeholder="Create a password"
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <button
+                        className="btn btn-brand rounded-pill w-100 py-2"
+                        disabled={!emailVerified || loading}
+                        onClick={handleRegister}
+                    >
+                        {emailVerified ? "Register Account" : "Verify email to continue"}
+                    </button>
+                </form>
             </div>
         </div>
     )
